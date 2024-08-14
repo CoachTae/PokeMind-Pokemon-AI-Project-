@@ -1,7 +1,8 @@
 import json
+import sys
 
 class Rewards:
-    def __init__(self, pyboy, PokeMind):
+    def __init__(self, pyboy, PokeMind, filename=None):
         '''
         POTENTIAL CASE OF ABUSE:
             If player has pokemon in party and pokemon of same ID in PC,
@@ -27,26 +28,29 @@ class Rewards:
         self.level_reward = 0
         self.party_levels = [0, 0, 0, 0, 0, 0]
         self.party_IDs = [0, 0, 0, 0, 0, 0]
+        self.previous_flags = self.initial_flags.copy()
 
-        try:
-            with open('Reward Object Save State.json', 'r') as file:
-                state = json.load(file)
+        if filename:
+            try:
+                with open(load_state, 'r') as file:
+                    state = json.load(file)
 
-            self.seen_tiles = state['seen_tiles']
-            self.vision = state['vision']
-            self.time = state['time']
-            self.time_penalty = state['time_penalty']
-            self.fitness = state['fitness']
-            self.flags_reward = state['flags_reward']
-            self.pokedex_reward = state['pokedex_reward']
-            self.badge_reward = state['badge_reward']
-            self.level_reward = state['level_reward']
-            self.party_levels = state['party_levels']
-            self.party_IDs = state['party_IDs']
-        except:
-            pass
+                self.seen_tiles = state['seen_tiles']
+                self.vision = state['vision']
+                self.time = state['time']
+                self.time_penalty = state['time_penalty']
+                self.fitness = state['fitness']
+                self.flags_reward = state['flags_reward']
+                self.pokedex_reward = state['pokedex_reward']
+                self.badge_reward = state['badge_reward']
+                self.level_reward = state['level_reward']
+                self.party_levels = state['party_levels']
+                self.party_IDs = state['party_IDs']
+                self.previous_flags = state['previous_flags']
+            except:
+                pass
 
-    def save_state(self):
+    def save_state(self, filename):
         state_dict = {}
 
         state_dict['seen_tiles'] = self.seen_tiles
@@ -60,8 +64,9 @@ class Rewards:
         state_dict['level_reward'] = self.level_reward
         state_dict['party_levels'] = self.party_levels
         state_dict['party_IDs'] = self.party_IDs
+        state_dict['previous_flags'] = self.previous_flags
 
-        with open('Reward Object Save State.json', 'w') as file:
+        with open(filename, 'w') as file:
             json.dump(state_dict, file, indent=4)
         
     def fog_of_war(self, state):
@@ -126,12 +131,12 @@ class Rewards:
     def flags(self, state):
         flags = state['Flags']
         
-        flag_counter = 0 # Counts how many flags differ from original
         for i in range(len(flags)):
-            if flags[i] != self.initial_flags[i]:
-                flag_counter += 1
+            if flags[i] != self.previous_flags[i] and flags[i] != self.initial_flags[i]:
+                self.flags_reward += 1
+                
 
-        self.flags_reward = flag_counter
+        self.previous_flags = flags
 
     def pokedex(self, state):
         pokedex = state['Pokedex']
@@ -181,7 +186,7 @@ class Rewards:
         
         
 
-    def calculate_fitness(self, state, save=True):
+    def calculate_fitness(self, state, save=True, filename=None):
         self.fog_of_war(state)
         self.time_elapsed(state)
         self.flags(state)
@@ -211,5 +216,5 @@ class Rewards:
         self.fitness = fitness
 
         if save:
-            self.save_state()
+            self.save_state(filename)
         

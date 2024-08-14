@@ -105,7 +105,7 @@ def run_instance(action, num_steps, gb_path, device):
     game_state_file = open('RandomArmy.state', 'rb')            
     pyboy.load_state(game_state_file)
     Hands = PokeMind_Commands.Hands(pyboy)
-    Rewards = PokeMind_Rewards.Rewards(pyboy, PokeMind)
+    Rewards = PokeMind_Rewards.Rewards(pyboy, PokeMind, filename='RandomArmyRewards.json')
     PokeDAQ = PokeDAQS.DAQ(pyboy, PokeMind)
     
     # Perform initial action
@@ -124,14 +124,9 @@ def run_instance(action, num_steps, gb_path, device):
         pyboy.stop(False)
         return Rewards.fitness
     except AttributeError as e:
+        print("Error has occurred in subagents. Check Troubleshooting Log.txt")
         with open('Troubleshooting Log.txt', 'a') as file:
             file.write(f'{e}.\n')
-
-def process_results(result):
-    global action_rewards, results_received
-    action, reward = result
-    action_rewards[action] += reward
-    results_received += 1
 
 #--------------------END OF SUPPORT FUNCTIONS FOR ARMY FUNCTION------------------------
 
@@ -159,6 +154,7 @@ def random_army():
     gb_path = 'PokemonBlue.gb'
     num_steps = 50
     num_subagents = 10
+    num_turns_no_reward = 0
     #device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     
@@ -170,14 +166,14 @@ def random_army():
     MainAgent.load_state(game_state)
     Main_Hands = PokeMind_Commands.Hands(MainAgent)
     Main_PokeDAQ = PokeDAQS.DAQ(MainAgent, Main_PokeMind)
-    Main_Rewards = PokeMind_Rewards.Rewards(MainAgent, Main_PokeMind)
+    Main_Rewards = PokeMind_Rewards.Rewards(MainAgent, Main_PokeMind, filename='RandomArmyRewards.json')
 
     #mp.set_start_method('spawn') # Instead of forking processes which doesn't end them
     
     move_counter = 0
     while MainAgent.tick(24, True):
         # Save the current state
-        with open('RandomArmy.state', 'wb') as file:
+        with open('RandomArmyRewards.json', 'wb') as file:
             MainAgent.save_state(file)
         
         # Create list of first actions for each agent
@@ -230,11 +226,55 @@ def random_army():
             print("Best action: ", Main_Hands.name_the_action(best_action))
             # Primary agent takes action
             Main_Hands.num_to_action(best_action)
+
+
+        try:
+            previous_rewards = [Main_Rewards.vision, Main_Rewards.flags_reward, Main_Rewards.pokedex_reward, Main_Rewards.badge_reward, Main_Rewards.level_reward]
+            previous_rewards = previous_rewards.copy()
+            #print('\n')
+            #print(previous_rewards)
+        except:
+            previous_rewards = [0, 0, 0, 0, 0]
+
+        try:
+            previous_flags = state['Flags'].copy()
+        except:
+            previous_flags = [0*len(Main_Rewards.initial_flags)]
+                
+        state = Main_PokeDAQ.get_game_state()
+        Main_Rewards.calculate_fitness(state, save=True, filename='RandomArmyRewards.json')
+        
+        current_rewards = [Main_Rewards.vision, Main_Rewards.flags_reward, Main_Rewards.pokedex_reward, Main_Rewards.badge_reward, Main_Rewards.level_reward]
+        
+        all_equal = True
+        for i, reward in enumerate(previous_rewards):
+            if abs(current_rewards[i] - reward) != 0:
+                all_equal = False
+                break
+
+        if all_equal:
+            num_turns_no_reward += 1
+        else:
+            num_turns_no_reward = 0
+
+        print(f"Number of turns without reward = {num_turns_no_reward}.")
+        if num_turns_no_reward >= 50:
+            print("Taking random moves.")
+            for i in range(1000):
+                Main_Hands.press_random()
+                MainAgent.tick(24, True)
+            num_turns_no_reward = 0
+        else:
+            pass
+                
+                
+    
         
         move_counter += 1
 
+        
         if move_counter == 10:
-            with open("RandomArmy.state", 'wb') as file:
+            with open('RandomArmy.state', 'wb') as file:
                 MainAgent.save_state(file)
             move_counter = 0
 
