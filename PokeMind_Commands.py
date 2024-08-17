@@ -135,4 +135,25 @@ class Hands:
             return "Select"
         elif number == 8:
             return "Nothing"
+
+    def random_weighted(self, weighted_move, move_weight):
+        '''
+        weighted_move should be a number between 0 and 8 (inclusive)
+
+        move_weight should be 0 <= weight <= 1
+        '''
+        
+        choice = rand.random()
+        moves = range(0,9)
+        weights = [(1 - move_weight) / 8] * 9
+        weights[weighted_move] = move_weight
+
+        cumulative = 0
+        for i, weight in enumerate(weights):
+            cumulative += weight
+            if choice <= cumulative:
+                self.num_to_action(moves[i])
+                break
+        
+        
         

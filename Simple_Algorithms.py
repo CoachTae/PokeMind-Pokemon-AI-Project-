@@ -119,7 +119,7 @@ def run_instance(action, num_steps, gb_path, device):
         for _ in range(num_steps - 1):
             state = PokeDAQ.get_game_state()
             Rewards.calculate_fitness(state, save=False)
-            Hands.press_random()
+            Hands.random_weighted(action, 0.25)
             pyboy.tick(24, True)
         pyboy.stop(False)
         return Rewards.fitness
@@ -171,7 +171,7 @@ def random_army():
     #mp.set_start_method('spawn') # Instead of forking processes which doesn't end them
     
     move_counter = 0
-    while MainAgent.tick(24, True):
+    while MainAgent.tick():
         # Save the current state
         with open('RandomArmyRewards.json', 'wb') as file:
             MainAgent.save_state(file)
@@ -277,5 +277,8 @@ def random_army():
             with open('RandomArmy.state', 'wb') as file:
                 MainAgent.save_state(file)
             move_counter = 0
+
+        for i in range(23):
+            MainAgent.tick()
 
     MainAgent.stop()
