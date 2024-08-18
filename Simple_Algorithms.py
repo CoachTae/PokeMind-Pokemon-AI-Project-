@@ -119,7 +119,7 @@ def run_instance(action, num_steps, gb_path, device):
         for _ in range(num_steps - 1):
             state = PokeDAQ.get_game_state()
             Rewards.calculate_fitness(state, save=False)
-            Hands.random_weighted(action, 0.25)
+            Hands.random_weighted(action, 0.18)
             pyboy.tick(24, True)
         pyboy.stop(False)
         return sum([Rewards.vision,
@@ -166,8 +166,8 @@ def random_army():
     MainAgent = PyBoy(gb_path)
     MainAgent.set_emulation_speed(0)
     Main_PokeMind = MainAgent.game_wrapper
-    game_state = open('RandomArmy.state', 'rb')
-    MainAgent.load_state(game_state)
+    with open("RandomArmy.state", 'rb') as file:
+        MainAgent.load_state(file)
     Main_Hands = PokeMind_Commands.Hands(MainAgent)
     Main_PokeDAQ = PokeDAQS.DAQ(MainAgent, Main_PokeMind)
     Main_Rewards = PokeMind_Rewards.Rewards(MainAgent, Main_PokeMind, filename='RandomArmyRewards.json')
