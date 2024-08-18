@@ -12,8 +12,7 @@ class Map:
         return (width, height)
 
     def get_map_id(self):
-        # Uses 2 values for map ID?? I don't really get it
-        return self.pyboy.memory[0xD36A:0xD36C]
+        return self.pyboy.memory[0xD35E]
 
     def get_map_data(self):
         '''

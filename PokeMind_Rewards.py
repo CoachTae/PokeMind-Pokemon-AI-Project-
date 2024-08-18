@@ -32,7 +32,7 @@ class Rewards:
 
         if filename:
             try:
-                with open(load_state, 'r') as file:
+                with open(filename, 'r') as file:
                     state = json.load(file)
 
                 self.seen_tiles = state['seen_tiles']
@@ -47,8 +47,9 @@ class Rewards:
                 self.party_levels = state['party_levels']
                 self.party_IDs = state['party_IDs']
                 self.previous_flags = state['previous_flags']
-            except:
-                pass
+            except AttributeError as e:
+                print("Trouble loading reward state.")
+                print(f"Error: {e}")
 
     def save_state(self, filename):
         state_dict = {}

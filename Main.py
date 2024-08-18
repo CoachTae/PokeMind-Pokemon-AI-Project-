@@ -58,9 +58,8 @@ state = PokeDAQ.get_game_state()
 # Debug function run every X seconds
 def test_func(pyboy):
     state = PokeDAQ.get_game_state()
-    Rewards.calculate_fitness(state)
-    print(Rewards.level_reward)
-    print('\n\n\n\n\n\n\n\n\n')
+    #Rewards.calculate_fitness(state)
+    print(state['Map Data']['ID'])
 
 
 def run_every_interval(interval, test_func, pyboy):

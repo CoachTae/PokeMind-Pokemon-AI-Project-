@@ -154,6 +154,6 @@ class Hands:
             if choice <= cumulative:
                 self.num_to_action(moves[i])
                 break
-        
+         
         
         

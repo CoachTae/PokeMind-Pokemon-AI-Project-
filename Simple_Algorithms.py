@@ -122,7 +122,11 @@ def run_instance(action, num_steps, gb_path, device):
             Hands.random_weighted(action, 0.25)
             pyboy.tick(24, True)
         pyboy.stop(False)
-        return Rewards.fitness
+        return sum([Rewards.vision,
+                    Rewards.flags_reward,
+                    Rewards.pokedex_reward,
+                    Rewards.badge_reward,
+                    Rewards.level_reward])
     except AttributeError as e:
         print("Error has occurred in subagents. Check Troubleshooting Log.txt")
         with open('Troubleshooting Log.txt', 'a') as file:
@@ -173,7 +177,7 @@ def random_army():
     move_counter = 0
     while MainAgent.tick():
         # Save the current state
-        with open('RandomArmyRewards.json', 'wb') as file:
+        with open('RandomArmy.state', 'wb') as file:
             MainAgent.save_state(file)
         
         # Create list of first actions for each agent
@@ -256,6 +260,7 @@ def random_army():
             num_turns_no_reward += 1
         else:
             num_turns_no_reward = 0
+            print("Current Rewards: ", current_rewards)
 
         print(f"Number of turns without reward = {num_turns_no_reward}.")
         if num_turns_no_reward >= 50:
@@ -271,12 +276,6 @@ def random_army():
     
         
         move_counter += 1
-
-        
-        if move_counter == 10:
-            with open('RandomArmy.state', 'wb') as file:
-                MainAgent.save_state(file)
-            move_counter = 0
 
         for i in range(23):
             MainAgent.tick()
