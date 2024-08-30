@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class Vision(nn.Module):
-    def __init__(self, pyboy, PokeMind, input_channels=3, feature_size=128
+    def __init__(self, pyboy, PokeMind, input_channels=3, feature_size=128,
                  layer2size=16, layer3size=32, kernel_size=3,
                  stride=1, padding=1, fcsize=64):
         """
@@ -166,7 +166,7 @@ class Vision(nn.Module):
         # Convert to tensor
         image = torch.tensor(image).float()
 
-        # Ensure image has correct shape (channels, height, width)
+        # Ensure image has correct shape (batchsize, channels, height, width)
         if len(image.shape) == 3:
             image = image.unsqueeze(0)
 
