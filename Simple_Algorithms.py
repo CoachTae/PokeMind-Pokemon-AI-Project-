@@ -168,6 +168,7 @@ def random_army():
     Main_PokeMind = MainAgent.game_wrapper
     with open("RandomArmy.state", 'rb') as file:
         MainAgent.load_state(file)
+        file.close()
     Main_Hands = PokeMind_Commands.Hands(MainAgent)
     Main_PokeDAQ = PokeDAQS.DAQ(MainAgent, Main_PokeMind)
     Main_Rewards = PokeMind_Rewards.Rewards(MainAgent, Main_PokeMind, filename='RandomArmyRewards.json')

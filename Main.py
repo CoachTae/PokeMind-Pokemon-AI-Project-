@@ -23,9 +23,9 @@ import sys
         **kwargs,
     )'''
 
-if __name__ == "__main__":
-    simple.random_army()
-    sys.exit()
+#if __name__ == "__main__":
+#    simple.random_army()
+#    sys.exit()
 
 # Create PyBoy Object
 pyboy = PyBoy('PokemonBlue.gb')
@@ -59,7 +59,7 @@ state = PokeDAQ.get_game_state()
 def test_func(pyboy):
     state = PokeDAQ.get_game_state()
     #Rewards.calculate_fitness(state)
-    print(state['Map Data']['ID'])
+    print(state['Screen Image'].size)
 
 
 def run_every_interval(interval, test_func, pyboy):

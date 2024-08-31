@@ -64,6 +64,8 @@ class Battle:
         Player-selected move updates on hovering a new choice
         Enemy-selected move updates upon you making a move choice
 
+        Not sure if it's numbers 1-4 based on move order or if it's a move ID
+
         return: List of shape [player_move, enemy_move]
         '''
 
