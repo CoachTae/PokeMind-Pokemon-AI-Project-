@@ -30,7 +30,7 @@ class Vision(nn.Module):
             3rd Pool: 20x18
         """
 
-        super(Vision, self).__init()
+        super(Vision, self).__init__()
         
         self.pyboy = pyboy
         self.PokeMind = PokeMind

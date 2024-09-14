@@ -14,7 +14,7 @@ class PC:
         '''
         Gets information on items stored in PC.
 
-        return: List of tuples of shape (ID, Quantity)
+        return: List of lists of shape [ID, Quantity]
         '''
         
         all_items = self.pyboy.memory[0xD53B:0xD59F]
@@ -26,7 +26,7 @@ class PC:
             ID = all_items[2*i]
             quant = all_items[2*i + 1]
 
-            item_info = (ID, quant)
+            item_info = [ID, quant]
 
             pc_items.append(item_info)
 
@@ -57,7 +57,7 @@ class PC:
         poke_data['Status'] = data[4]
         poke_data['Types'] = (data[5], data[6])
         poke_data['Moves'] = data[8:12]
-        poke_data['Experience'] = sum(data[14:17])
+        poke_data['Experience'] = data[16] + 255*data[15] + 65025*data[14]
         poke_data['HP EV'] = sum(data[17:19])
         poke_data['Attack EV'] = sum(data[19:21])
         poke_data['Defense EV'] = sum(data[21:23])

@@ -58,8 +58,7 @@ state = PokeDAQ.get_game_state()
 # Debug function run every X seconds
 def test_func(pyboy):
     state = PokeDAQ.get_game_state()
-    #Rewards.calculate_fitness(state)
-    print(state['Screen Image'].size)
+    print(state['Wild Pokemon'])
 
 
 def run_every_interval(interval, test_func, pyboy):

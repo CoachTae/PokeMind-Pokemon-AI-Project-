@@ -92,13 +92,13 @@ class DAQ:
         for i in range(16):
             ID = sprites[i]["Identifier"]   # Categorical
             coords = sprites[i]["Coordinates"]  # Tuple of numbers, numerical
-            face = sprites[i]["Face Direction"] # Number, categorical
+            face = sprites[i]["Face Direction"] # Categorical
             self.flat_data[f"Sprite {i}"] = (ID, coords, face)  # Tuple of the above
 
-        # Menu Dat
+        # Menu Data
         self.flat_data['Cursor Coordinate'] = self.data["Menu Data"]["Cursor Coordinate"]   # Tuple, numerical
-        self.flat_data['Current Selection'] = self.data['Menu Data']['Current Selection']   # Number, categorical
-        self.flat_data['Select Item'] = self.data['Menu Data']['Select Item']   # Number, categorical
+        self.flat_data['Current Selection'] = self.data['Menu Data']['Current Selection']   # Categorical
+        self.flat_data['Select Item'] = self.data['Menu Data']['Select Item']   # Categorical
 
 
         # PokeMart Items
@@ -108,11 +108,11 @@ class DAQ:
         self.flat_data['Pokedex'] = self.data['Pokedex']    # List, boolean
 
         # Battle information
-        self.flat_data['Turn Count'] = battle['Turn Count'] # Number, numerical
-        self.flat_data['Substitute HP'] = battle['Substitute HP']   # Number, numerical
-        self.flat_data['Menu Type'] = battle['Menu Type']   # Number, categorical
+        self.flat_data['Turn Count'] = battle['Turn Count'] # Numerical
+        self.flat_data['Substitute HP'] = battle['Substitute HP']   # Numerical
+        self.flat_data['Menu Type'] = battle['Menu Type']   # Categorical
         self.flat_data['Move Choice'] = battle['Move Choice']   # List of 2 numbers, categorical
-        self.flat_data['Stat Modifiers'] = battle['Stat Modifiers'] # Tuple of tuples, numerical
+        self.flat_data['Stat Modifiers'] = battle['Stat Modifiers'] # List of lists, numerical
         self.flat_data['Escape Factor'] = battle['Escape Factor']   # Number, numerical?
         self.flat_data['Bait Factor'] = battle['Bait Factor']   # Number, numerical?
         self.flat_data['Your Move'] = [battle['Move Data']['ID'][0],    # Number, categorical
@@ -142,7 +142,7 @@ class DAQ:
                                                battle['Move Data']['Defense'][0],   # Numerical
                                                battle['Move Data']['Speed'][0],     # Numerical
                                                battle['Move Data']['Special'][0],   # Numerical
-                                               battle['Move Data']['PP'][0]]        # Numerical
+                                               battle['Move Data']['PP'][0]]        # List, Numerical
 
         self.flat_data['Enemy Pokemon Data'] = [battle['Move Data']['ID'][1],    # Categorical
                                                battle['Move Data']['HP'][1],    # Numerical
@@ -159,7 +159,7 @@ class DAQ:
                                                battle['Move Data']['Defense'][1],   # Numerical
                                                battle['Move Data']['Speed'][1],     # Numerical
                                                battle['Move Data']['Special'][1],   # Numerical
-                                               battle['Move Data']['PP'][1]]        # Numerical
+                                               battle['Move Data']['PP'][1]]        # List, Numerical
 
         # Extraneous information
         self.flat_data['Battle Type'] = battle['Battle Type']   # Tuple, Categorical
@@ -167,7 +167,7 @@ class DAQ:
         self.flat_data['Crit Flag'] = battle['Crit Flag'] # Categorical
         self.flat_data['Fishing Flag'] = battle['Fishing Flag'] # Boolean? Categorical?
         self.flat_data['Your Battle Status'] = battle['Battle Status'][0]   # List, Boolean
-        self.flat_data['Enemy Battle Status'] = battle['Battle Status'][1]
+        self.flat_data['Enemy Battle Status'] = battle['Battle Status'][1] # List, Boolean
 
         # Inventory
         self.flat_data['Inventory Items'] = self.data['Inventory']['Items'] # List of tuples, (Categorical, Numerical)
@@ -176,10 +176,10 @@ class DAQ:
 
         # Map data
         self.flat_data['Map ID'] = self.data['Map Data']['ID']  # Categorical
-        self.flat_data['Map Dimensions'] = self.data['Map Data']['Dimensions'] # Tuple, Numerical
+        self.flat_data['Map Dimensions'] = list(self.data['Map Data']['Dimensions']) # List, Numerical
 
         # PC Items and Pokemon
-        self.flat_data['PC Items'] = self.data['PC']['Items']   # List of tuples, (Categorical, Numerical)
+        self.flat_data['PC Items'] = self.data['PC']['Items']   # List of lists, (Categorical, Numerical)
         self.flat_data['PC Pokemon'] = []
 
         for pokemon in self.data['PC']['Pokemon']:
@@ -207,6 +207,7 @@ class DAQ:
         self.flat_data['Flags'] = self.data['Flags'] # List, Categorical
 
         # Wild Pokemon
+        # Each item has tuples of (Pokemon ID, Pokemon Lvl)
         self.flat_data['Common Pokemon'] = self.data['Wild Pokemon']['Common'] # List of tuples (Categorical, Numerical)
         self.flat_data['Uncommon Pokemon'] = self.data['Wild Pokemon']['Uncommon'] # List of tuples (Categorical, Numerical)
         self.flat_data['Rares'] = self.data['Wild Pokemon']['Rares'] # List of tuples (Categorical, Numerical)
@@ -237,7 +238,7 @@ class DAQ:
             pokemon_data.append(pokemon['Defense IV']) # Numerical
             pokemon_data.append(pokemon['Speed IV']) # Numerical
             pokemon_data.append(pokemon['Spec IV']) # Numerical
-            pokemon_data.append(pokemon['Move PPs']) # Numerical
+            pokemon_data.append(pokemon['Move PPs']) # List, Numerical
             self.flat_data['Party'].append(pokemon_data)
 
         # Opponent Pokemon Party
@@ -261,10 +262,10 @@ class DAQ:
             pokemon_data.append(pokemon['Defense IV']) # Numerical
             pokemon_data.append(pokemon['Speed IV']) # Numerical
             pokemon_data.append(pokemon['Spec IV']) # Numerical
-            pokemon_data.append(pokemon['Move PPs']) # Numerical
+            pokemon_data.append(pokemon['Move PPs']) # List, Numerical
             self.flat_data['Opponent Pokemon'].append(pokemon_data)
 
         # Clock
-        self.flat_data['Clock'] = self.data['Clock'] # Tuple, Numerical
+        self.flat_data['Clock'] = list(self.data['Clock']) # List, Numerical
 
         return self.flat_data

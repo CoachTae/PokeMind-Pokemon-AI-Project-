@@ -82,18 +82,18 @@ class Battle:
         '''
         Pulls the modifiers to each stat for each Pokemon in battle.
 
-        return: Tuple of tuples of shape (player_atk_mod, enemy_atk_mod), etc
+        return: List of Lists of shape (player_atk_mod, enemy_atk_mod), etc
         '''
 
         try:
-            atk_mods = (self.pyboy.memory[0xCD1A], self.pyboy.memory[0xCD2E])
-            def_mods = (self.pyboy.memory[0xCD1B], self.pyboy.memory[0xCD2F])
-            speed_mods = (self.pyboy.memory[0xCD1C], self.pyboy.memory[0xCD30])
-            spec_mods = (self.pyboy.memory[0xCD1D], self.pyboy.memory[0xCD31])
-            acc_mods = (self.pyboy.memory[0xCD1E], self.pyboy.memory[0xCD32])
-            evasion_mods = (self.pyboy.memory[0xCD1F], self.pyboy.memory[0xCD33])
+            atk_mods = [self.pyboy.memory[0xCD1A], self.pyboy.memory[0xCD2E]]
+            def_mods = [self.pyboy.memory[0xCD1B], self.pyboy.memory[0xCD2F]]
+            speed_mods = [self.pyboy.memory[0xCD1C], self.pyboy.memory[0xCD30]]
+            spec_mods = [self.pyboy.memory[0xCD1D], self.pyboy.memory[0xCD31]]
+            acc_mods = [self.pyboy.memory[0xCD1E], self.pyboy.memory[0xCD32]]
+            evasion_mods = [self.pyboy.memory[0xCD1F], self.pyboy.memory[0xCD33]]
 
-            stat_mods = (atk_mods, def_mods, speed_mods,spec_mods, acc_mods, evasion_mods)
+            stat_mods = [atk_mods, def_mods, speed_mods,spec_mods, acc_mods, evasion_mods]
 
             return stat_mods
 
