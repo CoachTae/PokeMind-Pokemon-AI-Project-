@@ -3,7 +3,7 @@ import sys
 import math
 from ..Constants import Experience_Rates as ER
 
-class Normalizer:
+class Preprocessor:
     def __init__(self):
         self.slow, self.med_slow, self.med_fast, self.fast = ER.load_exp_rates()
         self.rates = [self.slow, self.med_slow, self.med_fast, self.fast]
@@ -13,12 +13,13 @@ class Normalizer:
 
         except:
             print("Error loading 'Max Values.json'.")
-            input("Press anything to continue the prgoram.")
+            input("Press anything to continue the prgoram and create this file.")
             maxvals = {'Cursor Coordinate': 0,
                        'Max HP': 0,
                        'Map Dimensions': [0,0],
                        'Frames': 30,
                        }
+
 
     def normalize(self, state):
         '''
@@ -296,3 +297,6 @@ class Normalizer:
                 json.dump(maxvals, file, indent=4)
 
         return state
+
+    def one_hot_encoder(self, state):
+        

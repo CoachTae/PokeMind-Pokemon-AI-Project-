@@ -41,7 +41,9 @@ class Menu:
         '''
 
         try:
-            return self.pyboy.memory[0xCC26]
+            item_number = self.pyboy.memory[0xCC26]
+            item_ID = self.pyboy.memory[0xD31E + item_number*2]
+            return item_ID
 
         except AttributeError as e:
             print("Message from Menu.py")
